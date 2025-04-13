@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Fractal Zoom</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 300vh;
+            background-color: black;
+            overflow-x: hidden;
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .content {
+            position: relative;
+            color: white;
+            text-align: center;
+            padding-top: 40vh;
+            font-family: Arial, sans-serif;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="fractalCanvas"></canvas>
+    <div class="content">
+        <h1>Infinite Fractal Zoom</h1>
+        <p>Scroll to dive deeper</p>
+    </div>
+
+    <!-- Vertex Shader -->
+    <script id="vertexShader" type="x-shader/x-vertex">
+        attribute vec2 position;
+        void main() {
+            gl_Position = vec4(position, 0.0, 1.0);
+        }
+    </script>
+
+    <!-- Fragment Shader -->
+    <script id="fragmentShader" type="x-shader/x-fragment">
+        precision highp float;
+        
+        uniform vec2 resolution;
+        uniform float zoom;
+        uniform vec2 center;
+        uniform float time;
+        uniform vec2 juliaParam; // New uniform for varying Julia set parameter
+
+        vec2 cMul(vec2 a, vec2 b) {
+            return vec2(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
+        }
+
+        vec3 palette(float t) {
+            // Dynamic color palette
+            vec3 a = vec3(0.5, 0.5, 0.5);
+            vec3 b = vec3(0.5, 0.5, 0.5);
+            vec3 c = vec3(1.0, 1.0, 1.0);
+            vec3 d = vec3(0.0, 0.33, 0.67);
+            return a + b * cos(6.28318 * (c * t + d));
+        }
+
+        void main() {
+            vec2 uv = (gl_FragCoord.xy * 2.0 - resolution) / min(resolution.x, resolution.y);
+            
+            // Apply zoom and center
+            uv = uv / zoom + center;
+            
+            vec2 z = uv;
+            float iter = 0.0;
+            const float MAX_ITER = 360.0;
+            
+            // Julia set iteration with dynamic parameter
+            for(float i = 0.0; i < MAX_ITER; i++) {
+                z = cMul(z, z) + juliaParam;
+                if(dot(z, z) > 4.0) {
+                    iter = i;
+                    break;
+                }
+            }
+            
+            if(iter == 0.0) {
+                gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+            } else {
+                // Enhanced coloring with orbit traps
+                float smooth_iter = iter - log2(log2(dot(z, z))) + 4.0;
+                float t = smooth_iter * 0.015 + time * 0.1;
+                
+                // Add some variation based on position
+                t += length(z) * 0.1;
+                
+                vec3 color = palette(t);
+                
+                // Dynamic glow effect
+                float glow = exp(-smooth_iter * 0.03);
+                color += vec3(0.2, 0.1, 0.3) * glow;
+                
+                gl_FragColor = vec4(color, 1.0);
+            }
+        }
+    </script>
+
+    <script src="fractal.js"></script>
+</body>
+</html> 
