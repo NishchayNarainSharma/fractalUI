@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - RealityFractal</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="website-name">RealityFractal.blog</a>
+            <div class="nav-links">
+                <a href="/blog">Blog</a>
+                <a href="/thoughts">Thoughts</a>
+                <a href="/death">Death</a>
+                <a href="/fractals">Fractals</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <div class="glass-card animate-in">
+            <h1>Exploring the Infinite</h1>
+            <p class="blog-post-meta">Published on August 21, 2023</p>
+            <div class="blog-post">
+                <h2>The Nature of Reality: A Fractal Perspective</h2>
+                <p>In the depths of mathematical beauty lies a truth about our universe - it's fractals all the way down. From the branching patterns of trees to the spiral arms of galaxies, the same mathematical principles repeat at every scale.</p>
+                <div class="comments-section">
+                    <h3>Comments</h3>
+                    <div class="comment">
+                        <p>This perspective completely changed how I view reality.</p>
+                        <small>- Alex, 2 hours ago</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card animate-in">
+            <div class="blog-post">
+                <h2>Consciousness: The Ultimate Fractal</h2>
+                <p>Our thoughts, like fractals, branch infinitely into deeper levels of consciousness. Each thought contains universes of possibilities, each decision creates new patterns of reality.</p>
+                <div class="comments-section">
+                    <h3>Comments</h3>
+                    <div class="comment">
+                        <p>Mind-bending concepts explained beautifully.</p>
+                        <small>- Sarah, 1 day ago</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h2>Share Your Thoughts</h2>
+            <form class="comment-form">
+                <div class="form-group">
+                    <textarea class="form-input" rows="4" placeholder="What's on your mind?"></textarea>
+                </div>
+                <button type="submit" class="submit-button">Post Comment</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Animation on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        });
+
+        document.querySelectorAll('.glass-card').forEach((card) => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html> 

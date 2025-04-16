@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thoughts - RealityFractal</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="website-name">RealityFractal.blog</a>
+            <div class="nav-links">
+                <a href="blog.html">Blog</a>
+                <a href="thoughts.html">Thoughts</a>
+                <a href="death.html">Death</a>
+                <a href="fractals.html">Fractals</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <div class="glass-card animate-in">
+            <h1>Share Your Existential Thoughts</h1>
+            <p>A space for deep contemplation and shared consciousness.</p>
+            
+            <form id="thoughtForm" class="form-group">
+                <textarea class="form-input" rows="4" placeholder="Share your existential thought..."></textarea>
+                <button type="submit" class="submit-button">Share Thought</button>
+            </form>
+        </div>
+
+        <div id="thoughtsContainer">
+            <!-- Example Thought Card -->
+            <div class="glass-card thought-card animate-in">
+                <div class="thought-content">
+                    <p>"What if our consciousness is just a fractal pattern in the infinite tapestry of existence?"</p>
+                    <small class="thought-meta">- Anonymous, 2 hours ago</small>
+                </div>
+                <div class="thought-actions">
+                    <div class="vote-buttons">
+                        <button class="vote-button upvote">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>42</span>
+                        </button>
+                        <button class="vote-button downvote">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>3</span>
+                        </button>
+                    </div>
+                    <button class="vote-button" onclick="toggleComments(this)">
+                        <i class="fas fa-comment"></i>
+                        <span>Comments (5)</span>
+                    </button>
+                </div>
+                <div class="comments-section" style="display: none;">
+                    <div class="comment">
+                        <p>This resonates deeply with my own experiences.</p>
+                        <small>- User123, 1 hour ago</small>
+                    </div>
+                    <form class="comment-form">
+                        <div class="form-group">
+                            <input type="text" class="form-input" placeholder="Add a comment...">
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Another Example -->
+            <div class="glass-card thought-card animate-in">
+                <div class="thought-content">
+                    <p>"Each moment of awareness is a branch in the infinite tree of consciousness."</p>
+                    <small class="thought-meta">- ThoughtExplorer, 5 hours ago</small>
+                </div>
+                <div class="thought-actions">
+                    <div class="vote-buttons">
+                        <button class="vote-button upvote">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>28</span>
+                        </button>
+                        <button class="vote-button downvote">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>2</span>
+                        </button>
+                    </div>
+                    <button class="vote-button" onclick="toggleComments(this)">
+                        <i class="fas fa-comment"></i>
+                        <span>Comments (3)</span>
+                    </button>
+                </div>
+                <div class="comments-section" style="display: none;">
+                    <div class="comment">
+                        <p>Beautiful perspective on consciousness.</p>
+                        <small>- MindWanderer, 2 hours ago</small>
+                    </div>
+                    <form class="comment-form">
+                        <div class="form-group">
+                            <input type="text" class="form-input" placeholder="Add a comment...">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle comments section
+        function toggleComments(button) {
+            const card = button.closest('.thought-card');
+            const comments = card.querySelector('.comments-section');
+            comments.style.display = comments.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Handle voting
+        document.querySelectorAll('.vote-button').forEach(button => {
+            if (button.classList.contains('upvote') || button.classList.contains('downvote')) {
+                button.addEventListener('click', function() {
+                    const span = this.querySelector('span');
+                    let votes = parseInt(span.textContent);
+                    
+                    if (this.classList.contains('active')) {
+                        votes = this.classList.contains('upvote') ? votes - 1 : votes + 1;
+                        this.classList.remove('active');
+                    } else {
+                        votes = this.classList.contains('upvote') ? votes + 1 : votes - 1;
+                        this.classList.add('active');
+                        
+                        // Remove active from sibling
+                        const sibling = this.classList.contains('upvote') ? 
+                            this.nextElementSibling : 
+                            this.previousElementSibling;
+                        if (sibling.classList.contains('active')) {
+                            sibling.classList.remove('active');
+                            const siblingSpan = sibling.querySelector('span');
+                            siblingSpan.textContent = parseInt(siblingSpan.textContent) + 
+                                (this.classList.contains('upvote') ? -1 : 1);
+                        }
+                    }
+                    span.textContent = votes;
+                });
+            }
+        });
+
+        // Animation on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        });
+
+        document.querySelectorAll('.glass-card').forEach((card) => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html> 

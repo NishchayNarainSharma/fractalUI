@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Death - RealityFractal</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .quote {
+            font-style: italic;
+            font-size: 1.2rem;
+            margin: 2rem 0;
+            padding-left: 1rem;
+            border-left: 3px solid var(--electric-blue);
+        }
+        
+        .death-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .death-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="website-name">RealityFractal.blog</a>
+            <div class="nav-links">
+                <a href="blog.html">Blog</a>
+                <a href="thoughts.html">Thoughts</a>
+                <a href="death.html">Death</a>
+                <a href="fractals.html">Fractals</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <div class="glass-card death-card animate-in">
+            <h1>The Final Pattern</h1>
+            <p class="quote">"Death is not the end of the fractal pattern, but rather a transformation of its form."</p>
+            <p>In the grand tapestry of existence, death represents not an ending, but a transformation. Like a fractal pattern that seems to terminate yet continues infinitely in unseen dimensions, our consciousness may simply shift into forms beyond our current perception.</p>
+        </div>
+
+        <div class="glass-card death-card animate-in">
+            <h2>The Quantum Nature of Death</h2>
+            <p>Modern quantum physics suggests that consciousness might be fundamental to the universe, not merely an emergent property of brain activity. This raises profound questions about what truly happens when we die.</p>
+            <div class="comments-section">
+                <h3>Reflections</h3>
+                <div class="comment">
+                    <p>"Perhaps death is just our consciousness returning to the quantum foam of reality."</p>
+                    <small>- QuantumSeeker</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card death-card animate-in">
+            <h2>Death as a Mirror</h2>
+            <p>Like a fractal pattern that reveals its nature at every scale, death serves as a mirror reflecting the deepest truths about life. It reminds us that every moment is precious, every experience unique, and every consciousness invaluable.</p>
+            <div class="quote">
+                "In the face of death, we discover the infinite value of life."
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h2>Share Your Perspective</h2>
+            <form class="comment-form">
+                <div class="form-group">
+                    <textarea class="form-input" rows="4" placeholder="Share your thoughts on mortality and existence..."></textarea>
+                </div>
+                <button type="submit" class="submit-button">Share Reflection</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Animation on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        });
+
+        document.querySelectorAll('.glass-card').forEach((card) => {
+            observer.observe(card);
+        });
+
+        // Hover effect for cards
+        document.querySelectorAll('.death-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body>
+</html> 
