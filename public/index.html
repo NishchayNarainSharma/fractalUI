@@ -16,6 +16,11 @@
     <nav class="navbar">
         <div class="nav-content">
             <a href="index.html" class="website-name">RealityFractal.blog</a>
+            <button class="menu-toggle" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <div class="nav-links">
                 <a href="blog.html">Blog</a>
                 <a href="thoughts.html">Thoughts</a>
@@ -102,6 +107,20 @@
             document.querySelectorAll('.page-card').forEach(card => {
                 observer.observe(card);
             });
+        });
+
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            this.classList.toggle('active');
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+
+        document.addEventListener('click', function(e) {
+            const nav = document.querySelector('.nav-content');
+            const menuButton = document.querySelector('.menu-toggle');
+            if (!nav.contains(e.target)) {
+                menuButton.classList.remove('active');
+                document.querySelector('.nav-links').classList.remove('active');
+            }
         });
     </script>
 </body>
