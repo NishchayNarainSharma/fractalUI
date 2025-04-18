@@ -139,7 +139,7 @@ const basePatterns = [
 // Constants for smooth transitions
 const PATTERN_TRANSITION_SPEED = 0.015;  // Slower, more stable transition
 const SCROLL_SENSITIVITY = 0.0001;      // More controlled scroll response
-const MIN_ZOOM = 0.5;                   // Minimum zoom level
+const MIN_ZOOM = 1.5;                   // Minimum zoom level
 const MAX_ZOOM = 3.0;                   // Maximum zoom level
 const ZOOM_FACTOR = 1.02;               // Gentler zoom changes
 
