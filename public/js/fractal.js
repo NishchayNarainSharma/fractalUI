@@ -120,7 +120,7 @@ const timeLocation = gl.getUniformLocation(program, 'time');
 const juliaParamLocation = gl.getUniformLocation(program, 'juliaParam');
 
 // State variables
-let zoom = 5.0;
+let zoom = 6.0;
 let targetZoom = zoom;
 let scrollProgress = 0.1;
 let targetScrollProgress = 0;
