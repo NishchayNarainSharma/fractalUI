@@ -5,16 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog - RealityFractal</title>
     <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <canvas id="fractalCanvas"></canvas>
+
     <nav class="navbar">
         <div class="nav-content">
-            <a href="/" class="website-name">RealityFractal.blog</a>
+            <a href="index.html" class="website-name">RealityFractal.blog</a>
             <div class="nav-links">
-                <a href="/blog">Blog</a>
-                <a href="/thoughts">Thoughts</a>
-                <a href="/death">Death</a>
-                <a href="/fractals">Fractals</a>
+                <a href="blog.html">Blog</a>
+                <a href="thoughts.html">Thoughts</a>
+                <a href="death.html">Death</a>
+                <a href="fractals.html">Fractals</a>
             </div>
         </div>
     </nav>
@@ -61,6 +64,7 @@
         </div>
     </div>
 
+    <script src="js/fractal.js"></script>
     <script>
         // Add smooth scroll behavior
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {

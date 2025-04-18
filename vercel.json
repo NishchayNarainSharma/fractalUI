@@ -1,0 +1,37 @@
+{
+    "version": 2,
+    "routes": [
+        {
+            "src": "/",
+            "dest": "/public/index.html"
+        },
+        {
+            "src": "/blog",
+            "dest": "/public/blog.html"
+        },
+        {
+            "src": "/thoughts",
+            "dest": "/public/thoughts.html"
+        },
+        {
+            "src": "/death",
+            "dest": "/public/death.html"
+        },
+        {
+            "src": "/fractals",
+            "dest": "/public/fractals.html"
+        },
+        {
+            "src": "/styles/(.*)",
+            "dest": "/public/styles/$1"
+        },
+        {
+            "src": "/js/(.*)",
+            "dest": "/public/js/$1"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/public/$1"
+        }
+    ]
+} 
