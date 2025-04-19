@@ -1,0 +1,161 @@
+.fractal-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: #000;
+    overflow: hidden;
+}
+
+#fractalCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+    min-width: 250px;
+}
+
+.control-group {
+    margin-bottom: 15px;
+}
+
+.control-group:last-child {
+    margin-bottom: 0;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #ccc;
+}
+
+select, input[type="range"] {
+    width: 100%;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    color: white;
+    font-size: 14px;
+}
+
+select {
+    cursor: pointer;
+}
+
+select option {
+    background: #1a1a1a;
+    color: white;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 3px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.fractal-info {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 400px;
+    z-index: 1000;
+}
+
+.fractal-info h2 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #fff;
+}
+
+.fractal-info p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #ccc;
+}
+
+.fractal-formula {
+    font-family: 'Courier New', monospace;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+.help-text {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.help-text.visible {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .controls {
+        top: auto;
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        min-width: 0;
+    }
+
+    .fractal-info {
+        display: none;
+    }
+} 

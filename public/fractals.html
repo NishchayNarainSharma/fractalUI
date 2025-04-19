@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fractal Explorer - RealityFractal</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .page-container {
+            display: flex;
+            flex-direction: row;
+            min-height: 100vh;
+            padding-top: 60px;
+            background: #000;
+        }
+
+        .fractal-section {
+            display: flex;
+            flex: 1;
+            position: relative;
+        }
+
+        .fractal-canvas-container {
+            flex: 1;
+            margin-left: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #fractalCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            height: calc(100vh - 60px);
+            position: fixed;
+            left: 0;
+            top: 60px;
+            z-index: 10;
+            color: #fff;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .fractal-controls {
+            margin-bottom: 30px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .control-group select,
+        .control-group input[type="range"] {
+            width: 100%;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .control-group select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            padding-right: 30px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 16px;
+        }
+
+        .control-group select:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .control-group select option {
+            background: rgba(20, 20, 20, 0.95);
+            color: #fff;
+            padding: 12px;
+            font-size: 14px;
+        }
+
+        .control-group select:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background-color: rgba(30, 30, 30, 0.95);
+        }
+
+        /* Style for the select when open */
+        .control-group select:focus option:checked {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .control-group select option:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Ensure dropdown options are visible */
+        .control-group select optgroup,
+        .control-group select option {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        /* Add a subtle transition */
+        .control-group select {
+            transition: all 0.2s ease;
+        }
+
+        /* Style for disabled options if any */
+        .control-group select option:disabled {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Improve contrast for selected option */
+        .control-group select option:checked {
+            background: linear-gradient(0deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.1) 100%);
+        }
+
+        .pattern-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .pattern-option {
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            font-size: 13px;
+            color: #fff;
+            user-select: none;
+        }
+
+        .pattern-option:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .pattern-option.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .fractal-info {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .fractal-info h3 {
+            color: #fff;
+            margin-bottom: 12px;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .fractal-info p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .formula {
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 14px;
+            overflow-x: auto;
+            white-space: pre;
+            margin: 12px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .parameter-value {
+            text-align: right;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .preset-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .preset-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .preset-button.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .help-text {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: #fff;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 1000;
+            margin-left: 150px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 280px;
+            }
+
+            .fractal-canvas-container {
+                margin-left: 280px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 100%;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .fractal-canvas-container {
+                margin-left: 0;
+            }
+
+            .pattern-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .instruction-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            z-index: 1000;
+            display: none;
+            backdrop-filter: blur(5px);
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .instruction-overlay.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .instruction-overlay h3 {
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .instruction-overlay ul {
+            text-align: left;
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .instruction-overlay li {
+            margin: 8px 0;
+            color: #ddd;
+        }
+
+        .instruction-button {
+            position: fixed;
+            bottom: 20px;
+            left: 320px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .instruction-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .parameter-group {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .parameter-group.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .parameter-slider {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        /* Add a toggle button for mobile */
+        .toggle-sidebar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="website-name">RealityFractal.blog</a>
+            <button class="menu-toggle" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links">
+                <a href="blog.html">Blog</a>
+                <a href="thoughts.html">Thoughts</a>
+                <a href="death.html">Death</a>
+                <a href="fractals.html">Fractals</a>
+            </div>
+        </div>
+    </nav>
+
+    <button class="toggle-sidebar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="page-container">
+        <div class="sidebar">
+            <div class="fractal-controls">
+                <div class="control-group">
+                    <label for="fractalType">Fractal Type</label>
+                    <select id="fractalType">
+                        <option value="mandelbrot">Mandelbrot Set</option>
+                        <option value="julia">Julia Set</option>
+                        <option value="burningship">Burning Ship</option>
+                        <option value="tricorn">Tricorn</option>
+                    </select>
+                    <div class="preset-buttons">
+                        <button class="preset-button active" data-preset="classic">Classic</button>
+                        <button class="preset-button" data-preset="detailed">Detailed</button>
+                        <button class="preset-button" data-preset="smooth">Smooth</button>
+                        <button class="preset-button" data-preset="deep">Deep Zoom</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Pattern Variations</label>
+                    <div class="pattern-options">
+                        <div class="pattern-option active" data-pattern="classic">Classic</div>
+                        <div class="pattern-option" data-pattern="spiral">Spiral</div>
+                        <div class="pattern-option" data-pattern="symmetric">Symmetric</div>
+                        <div class="pattern-option" data-pattern="chaos">Chaos</div>
+                        <div class="pattern-option" data-pattern="vortex">Vortex</div>
+                        <div class="pattern-option" data-pattern="wave">Wave</div>
+                        <div class="pattern-option" data-pattern="crystal">Crystal</div>
+                        <div class="pattern-option" data-pattern="flame">Flame</div>
+                        <div class="pattern-option" data-pattern="nebula">Nebula</div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="colorScheme">Color Scheme</label>
+                    <select id="colorScheme">
+                        <option value="ocean">Ocean Depths</option>
+                        <option value="fire">Fire</option>
+                        <option value="forest">Forest</option>
+                        <option value="cosmic">Cosmic</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="iterations">Detail Level (Iterations): <span id="iterationValue">100</span></label>
+                    <input type="range" id="iterations" min="50" max="1000" value="100" step="50">
+                    <div class="parameter-value">Higher values = More detail, slower rendering</div>
+                </div>
+            </div>
+
+            <div class="fractal-info">
+                <h3 id="currentFractalTitle">Mandelbrot Set</h3>
+                <p id="fractalDescription">
+                    The Mandelbrot set is one of the most famous fractals, showing incredible complexity emerging from a simple mathematical rule.
+                </p>
+                <div class="formula" id="fractalFormula">z = z² + c</div>
+                <p>
+                    <strong>Controls:</strong><br>
+                    • Mouse wheel to zoom in/out<br>
+                    • Click and drag to pan<br>
+                    • Double click to reset view
+                </p>
+            </div>
+        </div>
+
+        <div class="fractal-section">
+            <div class="fractal-canvas-container">
+                <canvas id="fractalCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="help-text">
+        Mouse wheel to zoom • Click and drag to pan • Double click to reset view
+    </div>
+
+    <button class="instruction-button">
+        Show Instructions
+    </button>
+
+    <div class="instruction-overlay">
+        <h3>How to Explore Fractals</h3>
+        <ul>
+            <li><strong>Zoom:</strong> Use mouse wheel or pinch gesture</li>
+            <li><strong>Pan:</strong> Click and drag to move around</li>
+            <li><strong>Reset View:</strong> Double click to return to default view</li>
+            <li><strong>Change Pattern:</strong> Select from pattern variations</li>
+            <li><strong>Fine-tune:</strong> Adjust parameters for detailed control</li>
+            <li><strong>Color:</strong> Try different color schemes</li>
+            <li><strong>Detail Level:</strong> Modify iterations for more detail</li>
+        </ul>
+        <button onclick="this.parentElement.classList.remove('show')">Got it!</button>
+    </div>
+
+    <script src="js/fractal-explorer.js"></script>
+    <script>
+        // Add menu toggle functionality
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            this.classList.toggle('active');
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const nav = document.querySelector('.nav-content');
+            const menuButton = document.querySelector('.menu-toggle');
+            if (!nav.contains(e.target)) {
+                menuButton.classList.remove('active');
+                document.querySelector('.nav-links').classList.remove('active');
+            }
+        });
+
+        // Pattern options functionality
+        document.querySelectorAll('.pattern-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.pattern-option').forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                updateFractalPattern(this.dataset.pattern);
+            });
+        });
+
+        // Update iteration value display
+        document.getElementById('iterations').addEventListener('input', function(e) {
+            document.getElementById('iterationValue').textContent = e.target.value;
+        });
+
+        // Animation on scroll for glass cards
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        });
+
+        document.querySelectorAll('.glass-card').forEach((card) => {
+            observer.observe(card);
+        });
+
+        // Fractal information for different types
+        const fractalInfo = {
+            mandelbrot: {
+                title: "Mandelbrot Set",
+                description: "The Mandelbrot set is one of the most famous fractals, showing incredible complexity emerging from a simple mathematical rule.",
+                formula: "z = z² + c"
+            },
+            julia: {
+                title: "Julia Set",
+                description: "The Julia set shows how a simple function behaves under iteration, creating beautiful and intricate patterns.",
+                formula: "z = z² + c (where c is fixed)"
+            },
+            burningship: {
+                title: "Burning Ship Fractal",
+                description: "A variation of the Mandelbrot set that uses absolute values, creating a distinctive flame-like pattern.",
+                formula: "z = (|Re(z)| + i|Im(z)|)² + c"
+            },
+            tricorn: {
+                title: "Tricorn Fractal",
+                description: "Also known as the Mandelbar set, this fractal uses complex conjugates to create three-fold symmetry.",
+                formula: "z = z̄² + c"
+            }
+        };
+
+        // Show/hide instructions
+        document.querySelector('.instruction-button').addEventListener('click', () => {
+            document.querySelector('.instruction-overlay').classList.add('show');
+        });
+
+        // Fractal type change handler
+        document.getElementById('fractalType').addEventListener('change', function(e) {
+            const type = e.target.value;
+            const info = fractalInfo[type];
+            
+            document.getElementById('currentFractalTitle').textContent = info.title;
+            document.getElementById('fractalDescription').textContent = info.description;
+            document.getElementById('fractalFormula').textContent = info.formula;
+
+            // Show/hide Julia parameters
+            const juliaParams = document.getElementById('juliaParams');
+            juliaParams.classList.toggle('show', type === 'julia');
+
+            updateFractal(type);
+        });
+
+        // Preset button functionality
+        document.querySelectorAll('.preset-button').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('.preset-button').forEach(btn => 
+                    btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Apply preset settings
+                const preset = this.dataset.preset;
+                const iterations = document.getElementById('iterations');
+                switch(preset) {
+                    case 'classic':
+                        iterations.value = 100;
+                        break;
+                    case 'detailed':
+                        iterations.value = 500;
+                        break;
+                    case 'smooth':
+                        iterations.value = 200;
+                        break;
+                    case 'deep':
+                        iterations.value = 1000;
+                        break;
+                }
+                iterations.dispatchEvent(new Event('input'));
+                iterations.dispatchEvent(new Event('change'));
+            });
+        });
+
+        function updateFractalPattern(pattern) {
+            // This function will be implemented in fractal.js
+            console.log(`Updating pattern to: ${pattern}`);
+        }
+
+        function updateFractal(type) {
+            // This function will be implemented in fractal.js
+            console.log(`Updating fractal type to: ${type}`);
+        }
+
+        // Show instructions on first visit
+        if (!localStorage.getItem('instructionsShown')) {
+            document.querySelector('.instruction-overlay').classList.add('show');
+            localStorage.setItem('instructionsShown', 'true');
+        }
+
+        // Add mobile sidebar toggle functionality
+        document.querySelector('.toggle-sidebar')?.addEventListener('click', () => {
+            document.querySelector('.sidebar').classList.toggle('show');
+        });
+
+        // Hide sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            const sidebar = document.querySelector('.sidebar');
+            const toggleButton = document.querySelector('.toggle-sidebar');
+            if (window.innerWidth <= 480 && 
+                !sidebar.contains(e.target) && 
+                !toggleButton.contains(e.target)) {
+                sidebar.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html> 

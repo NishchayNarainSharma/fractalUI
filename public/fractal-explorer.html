@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fractal Explorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        #fractalCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+        }
+
+        .controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ddd;
+            font-size: 14px;
+        }
+
+        select, input[type="range"] {
+            width: 200px;
+            padding: 5px;
+            background: #333;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 4px;
+        }
+
+        select:focus, input[type="range"]:focus {
+            outline: none;
+            border-color: #666;
+        }
+
+        .info-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-panel h2 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .info-panel p {
+            margin-bottom: 10px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #ddd;
+        }
+
+        .help-text {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #ddd;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
+        }
+
+        .math {
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="fractalCanvas"></canvas>
+
+    <div class="controls">
+        <div class="control-group">
+            <label for="fractalType">Fractal Type:</label>
+            <select id="fractalType">
+                <option value="mandelbrot">Mandelbrot Set</option>
+                <option value="julia">Julia Set</option>
+                <option value="burningship">Burning Ship</option>
+                <option value="tricorn">Tricorn</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="colorScheme">Color Scheme:</label>
+            <select id="colorScheme">
+                <option value="ocean">Ocean</option>
+                <option value="fire">Fire</option>
+                <option value="forest">Forest</option>
+                <option value="cosmic">Cosmic</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="maxIterations">Max Iterations: <span id="iterationValue">100</span></label>
+            <input type="range" id="maxIterations" min="50" max="1000" value="100" step="50">
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <h2>Fractal Information</h2>
+        <div id="fractalInfo">
+            <p><strong>Mandelbrot Set</strong></p>
+            <p>The Mandelbrot set is defined by the function:</p>
+            <p class="math">z<sub>n+1</sub> = z<sub>n</sub>² + c</p>
+            <p>where z starts at 0 and c is the point being tested. The set includes all points c for which the sequence remains bounded.</p>
+        </div>
+    </div>
+
+    <div class="help-text">
+        Mouse wheel to zoom • Click and drag to pan • Double click to reset view
+    </div>
+
+    <script src="js/fractal-explorer.js"></script>
+    <script>
+        // Initialize the fractal renderer
+        const canvas = document.getElementById('fractalCanvas');
+        const renderer = new FractalRenderer(canvas);
+
+        // Set up UI controls
+        document.getElementById('fractalType').addEventListener('change', (e) => {
+            renderer.setFractalType(e.target.value);
+            updateFractalInfo(e.target.value);
+        });
+
+        document.getElementById('colorScheme').addEventListener('change', (e) => {
+            renderer.setColorScheme(e.target.value);
+        });
+
+        const iterationsInput = document.getElementById('maxIterations');
+        const iterationValue = document.getElementById('iterationValue');
+        iterationsInput.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            iterationValue.textContent = value;
+            renderer.setMaxIterations(value);
+        });
+
+        // Update fractal information
+        function updateFractalInfo(type) {
+            const info = {
+                mandelbrot: `
+                    <p><strong>Mandelbrot Set</strong></p>
+                    <p>The Mandelbrot set is defined by the function:</p>
+                    <p class="math">z<sub>n+1</sub> = z<sub>n</sub>² + c</p>
+                    <p>where z starts at 0 and c is the point being tested. The set includes all points c for which the sequence remains bounded.</p>
+                `,
+                julia: `
+                    <p><strong>Julia Set</strong></p>
+                    <p>The Julia set uses the same function as the Mandelbrot set:</p>
+                    <p class="math">z<sub>n+1</sub> = z<sub>n</sub>² + c</p>
+                    <p>but c is fixed and z varies. This creates a different pattern for each value of c.</p>
+                `,
+                burningship: `
+                    <p><strong>Burning Ship Fractal</strong></p>
+                    <p>A variation of the Mandelbrot set using the function:</p>
+                    <p class="math">z<sub>n+1</sub> = (|Re(z<sub>n</sub>)| + i|Im(z<sub>n</sub>)|)² + c</p>
+                    <p>The absolute values create a distinctive flame-like pattern.</p>
+                `,
+                tricorn: `
+                    <p><strong>Tricorn Fractal</strong></p>
+                    <p>Also known as the Mandelbar set, it uses the function:</p>
+                    <p class="math">z<sub>n+1</sub> = z̄<sub>n</sub>² + c</p>
+                    <p>where z̄ is the complex conjugate of z. This creates a three-cornered pattern.</p>
+                `
+            };
+            document.getElementById('fractalInfo').innerHTML = info[type];
+        }
+    </script>
+</body>
+</html> 
