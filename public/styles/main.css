@@ -169,19 +169,63 @@ html, body {
 }
 
 .hero-title {
-    font-family: 'Dancing Script', cursive;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 5.5rem;
     font-weight: 700;
+    letter-spacing: -0.02em;
     margin-bottom: 1rem;
-    color: #000;
-    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.6);
+    background: linear-gradient(120deg, #000000 0%, #1a1a1a 45%, #333333 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.2),
+                 0 0 40px rgba(255, 255, 255, 0.1),
+                 2px 2px 4px rgba(0, 0, 0, 0.8);
+    animation: gradientShift 8s ease infinite;
+    background-size: 200% auto;
+    position: relative;
+    z-index: 1;
+}
+
+.hero-title::before {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    background: linear-gradient(120deg, #000000 0%, #1a1a1a 45%, #333333 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: blur(8px);
+    opacity: 0.25;
 }
 
 .hero-subtitle {
-    font-family: 'Dancing Script', cursive;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 2.2rem;
-    color: #000;
-    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.6);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 2rem;
+    background: linear-gradient(120deg, #000000 0%, #262626 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.15),
+                 0 0 30px rgba(255, 255, 255, 0.075),
+                 1px 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 /* Scroll Indicator */
